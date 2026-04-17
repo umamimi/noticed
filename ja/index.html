@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noticed — 存在に気づく。気づかれる。</title>
+<meta name="description" content="孤独を感じた瞬間に、ワンタップ。匿名の誰かが、あなたの存在に気づきます。">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0C1929;--navy-deep:#070F1A;--navy-mid:#132640;
+  --amber:#E8A84C;--amber-soft:#F5D5A0;--amber-dim:rgba(232,168,76,0.08);
+  --white:#F7F4EF;--white-dim:#BEB8AD;--white-muted:#7A756E;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--navy-deep);color:var(--white);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ═══ Language Switcher ═══ */
+.lang-switch{
+  position:fixed;top:20px;right:20px;z-index:100;
+  display:flex;gap:2px;background:rgba(12,25,41,0.6);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:4px;
+}
+.lang-switch a{
+  padding:6px 14px;border-radius:16px;text-decoration:none;
+  font-size:12px;font-weight:400;color:var(--white-muted);
+  letter-spacing:0.06em;transition:all 0.2s;
+}
+.lang-switch a.active{background:var(--amber);color:var(--navy);font-weight:500}
+.lang-switch a:not(.active):hover{color:var(--white-dim)}
+
+/* ═══ Hero ═══ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:80px 24px 60px;position:relative;
+}
+.hero::before{
+  content:'';position:absolute;top:20%;left:50%;transform:translate(-50%,-50%);
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,168,76,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-orb{
+  width:80px;height:80px;border-radius:50%;margin-bottom:48px;
+  background:radial-gradient(circle at 38% 38%,var(--amber),#C77B2A);
+  box-shadow:0 0 60px rgba(232,168,76,0.15),0 0 120px rgba(232,168,76,0.08);
+  animation:orb-breathe 5s ease-in-out infinite;
+}
+@keyframes orb-breathe{
+  0%,100%{box-shadow:0 0 60px rgba(232,168,76,0.15),0 0 120px rgba(232,168,76,0.08);transform:scale(1)}
+  50%{box-shadow:0 0 80px rgba(232,168,76,0.2),0 0 160px rgba(232,168,76,0.1);transform:scale(1.04)}
+}
+.hero h1{
+  font-family:var(--serif);font-size:clamp(42px,8vw,72px);font-weight:300;
+  letter-spacing:0.06em;color:var(--white);margin-bottom:16px;
+  font-style:italic;
+}
+.hero .tagline{
+  font-size:clamp(15px,2.5vw,20px);font-weight:300;color:var(--white-dim);
+  letter-spacing:0.08em;margin-bottom:48px;
+}
+.hero .hero-desc{
+  max-width:480px;font-size:15px;line-height:2.1;color:var(--white-muted);
+  font-weight:300;margin-bottom:56px;
+}
+.cta-group{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.cta-primary{
+  padding:16px 40px;border-radius:60px;border:none;
+  background:var(--amber);color:var(--navy);
+  font-family:var(--sans);font-size:15px;font-weight:500;
+  letter-spacing:0.03em;cursor:pointer;
+  transition:all 0.3s ease;
+}
+.cta-primary:hover{box-shadow:0 0 40px rgba(232,168,76,0.25);transform:translateY(-1px)}
+.cta-secondary{
+  padding:16px 40px;border-radius:60px;
+  border:1px solid rgba(255,255,255,0.1);background:transparent;
+  color:var(--white-dim);font-family:var(--sans);font-size:15px;font-weight:300;
+  letter-spacing:0.03em;cursor:pointer;transition:all 0.3s ease;
+}
+.cta-secondary:hover{border-color:rgba(255,255,255,0.2);color:var(--white)}
+.scroll-hint{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  font-size:12px;color:var(--white-muted);letter-spacing:0.1em;
+  animation:drift 2s ease-in-out infinite;
+}
+@keyframes drift{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ Section base ═══ */
+section{padding:120px 24px}
+.section-inner{max-width:800px;margin:0 auto}
+.section-label{
+  font-size:12px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:24px;font-weight:400;
+}
+.section-heading{
+  font-family:var(--serif);font-size:clamp(28px,5vw,40px);font-weight:300;
+  color:var(--white);margin-bottom:20px;line-height:1.4;
+}
+.section-body{font-size:15px;line-height:2;color:var(--white-muted);font-weight:300}
+
+/* ═══ How it works ═══ */
+.how{background:var(--navy)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:56px}
+.step{text-align:center;padding:32px 20px}
+.step-num{
+  width:48px;height:48px;border-radius:50%;margin:0 auto 20px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:20px;font-weight:300;color:var(--amber);
+  border:1px solid rgba(232,168,76,0.2);
+}
+.step h3{font-size:15px;font-weight:400;margin-bottom:10px;color:var(--white)}
+.step p{font-size:14px;line-height:1.8;color:var(--white-muted);font-weight:300}
+@media(max-width:640px){.steps{grid-template-columns:1fr;gap:20px}}
+
+/* ═══ Philosophy ═══ */
+.philosophy{background:var(--navy-deep)}
+.philosophy .section-inner{text-align:center}
+.phil-quote{
+  font-family:var(--serif);font-size:clamp(22px,4vw,32px);font-weight:300;
+  font-style:italic;color:var(--white-dim);line-height:1.7;
+  margin:40px 0 20px;max-width:600px;margin-left:auto;margin-right:auto;
+}
+.phil-statement{
+  font-family:var(--serif);font-size:clamp(18px,3vw,24px);font-weight:400;
+  color:var(--white);line-height:1.9;
+  margin:48px auto 0;max-width:640px;
+  letter-spacing:0.02em;
+}
+.phil-ref{font-size:14px;color:var(--white-muted);font-weight:300;letter-spacing:0.04em}
+
+/* ═══ Promise ═══ */
+.promise{background:var(--navy)}
+.promise-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px}
+.promise-card{
+  padding:28px 24px;border-radius:16px;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);
+}
+.promise-card h4{font-size:14px;font-weight:400;color:var(--amber);margin-bottom:8px;letter-spacing:0.02em}
+.promise-card p{font-size:14px;line-height:1.8;color:var(--white-muted);font-weight:300}
+@media(max-width:640px){.promise-grid{grid-template-columns:1fr}}
+
+/* ═══ Notify / CTA ═══ */
+.notify{background:var(--navy-deep);text-align:center}
+.notify .section-inner{max-width:560px}
+.email-form{
+  display:flex;gap:12px;margin-top:40px;max-width:440px;margin-left:auto;margin-right:auto;
+}
+.email-input{
+  flex:1;padding:14px 20px;border-radius:60px;border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.03);color:var(--white);
+  font-family:var(--sans);font-size:14px;font-weight:300;outline:none;
+  transition:border-color 0.3s;
+}
+.email-input::placeholder{color:var(--white-muted)}
+.email-input:focus{border-color:rgba(232,168,76,0.3)}
+.email-submit{
+  padding:14px 28px;border-radius:60px;border:none;
+  background:var(--amber);color:var(--navy);
+  font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+  white-space:nowrap;transition:all 0.3s;
+}
+.email-submit:hover{box-shadow:0 0 30px rgba(232,168,76,0.2)}
+.notify .fine-print{font-size:13px;color:var(--white-muted);margin-top:16px;font-weight:300}
+@media(max-width:480px){.email-form{flex-direction:column}}
+
+/* ═══ Footer ═══ */
+footer{
+  padding:40px 24px;text-align:center;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+footer .foot-logo{font-family:var(--serif);font-size:18px;font-weight:300;color:var(--amber);letter-spacing:0.06em;font-style:italic;margin-bottom:12px}
+footer .foot-links{display:flex;justify-content:center;gap:24px;margin-bottom:12px;flex-wrap:wrap}
+footer .foot-links a{font-size:13px;color:var(--white-muted);text-decoration:none;font-weight:300;letter-spacing:0.03em;transition:color 0.2s}
+footer .foot-links a:hover{color:var(--white-dim)}
+footer .foot-copy{font-size:12px;color:rgba(255,255,255,0.2);font-weight:300}
+</style>
+</head>
+<body>
+
+<!-- ═══ Language Switcher ═══ -->
+<div class="lang-switch">
+  <a href="/en">EN</a>
+  <a href="/ja" class="active">日本語</a>
+</div>
+
+<!-- ═══ Hero ═══ -->
+<section class="hero">
+  <div class="hero-orb"></div>
+  <h1>Noticed</h1>
+  <p class="tagline">ひとりじゃないと思える瞬間を、<br>どこかにいる誰かと。</p>
+  <p class="hero-desc">
+    飲み会で、会議で、休憩時間で。<br>
+    小さな集団の中で孤独を感じた瞬間に、ワンタップ。<br>
+    匿名の誰かが、あなたの存在に気づきます。
+  </p>
+  <div class="cta-group">
+    <button class="cta-primary" onclick="document.querySelector('.notify').scrollIntoView({behavior:'smooth'})">リリースを知らせてほしい</button>
+    <button class="cta-secondary" onclick="document.querySelector('.how').scrollIntoView({behavior:'smooth'})">仕組みを見る</button>
+  </div>
+  <div class="scroll-hint">↓ scroll</div>
+</section>
+
+<!-- ═══ How it works ═══ -->
+<section class="how" id="how">
+  <div class="section-inner">
+    <div class="section-label">How it works</div>
+    <h2 class="section-heading">ボタンは2つだけ。<br>言葉は、いらない。</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>孤独を感じたら、タップ</h3>
+        <p>飲み会で話題に入れないとき、会議で透明人間のように感じたとき。ポケットからスマホを出して、ボタンを1回押すだけ。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>匿名の誰かに届く</h3>
+        <p>あなたのシグナルは、匿名のまま誰かの通知に届きます。「誰かが、あなたの存在を必要としています」と。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>そばにいるよ、と返す</h3>
+        <p>受け取った人は「そばにいるよ」をタップ。あなたに通知が届きます。「誰かがあなたの存在に気づきました」と。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Promise ═══ -->
+<section class="promise">
+  <div class="section-inner">
+    <div class="section-label">Our promise</div>
+    <h2 class="section-heading">安心して使えること。<br>それが最優先。</h2>
+    <div class="promise-grid">
+      <div class="promise-card">
+        <h4>データを売らない</h4>
+        <p>あなたの孤独は、広告の材料にはなりません。データの外部販売は一切行いません。</p>
+      </div>
+      <div class="promise-card">
+        <h4>個人を特定しない</h4>
+        <p>氏名、メール、電話番号は取得しません。匿名IDだけで動作します。</p>
+      </div>
+      <div class="promise-card">
+        <h4>孤独の瞬間に広告を出さない</h4>
+        <p>辛い瞬間に商品を勧めることはしません。コア機能は永久に無料です。</p>
+      </div>
+      <div class="promise-card">
+        <h4>依存させない</h4>
+        <p>1日3回まで。バッジ、ストリーク、ポイントはありません。必要なときだけ使ってください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Philosophy ═══ -->
+<section class="philosophy">
+  <div class="section-inner">
+    <div class="section-label">Philosophy</div>
+    <h2 class="section-heading">会話は必要ない。<br>ただ、気づかれるだけでいい。</h2>
+    <p class="section-body">
+      社会心理学の研究は、匿名の相手からの最小限のシグナルでさえ、人の「包摂感」を回復させることを示しています。大切なのは「何を言われるか」ではなく、「誰かに認識されたこと」そのものです。
+    </p>
+    <p class="phil-statement">
+      自分が助かりたくて押したボタンが、いつの間にか誰かの助けになる。一人ひとりのつながりが広がり、誰もが抱えうる孤独感の軽減を目指します。
+    </p>
+  </div>
+</section>
+
+<!-- ═══ Notify ═══ -->
+<section class="notify">
+  <div class="section-inner">
+    <div class="section-label">Coming soon</div>
+    <h2 class="section-heading">まもなく、あなたの手元に。</h2>
+    <p class="section-body">
+      Noticedは現在開発中です。リリース時にお知らせします。
+    </p>
+    <div class="email-form">
+      <input type="email" class="email-input" placeholder="メールアドレス">
+      <button class="email-submit">登録する</button>
+    </div>
+    <p class="fine-print">リリース通知のみに使用します。広告・第三者への共有は行いません。</p>
+  </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer>
+  <div class="foot-logo">Noticed</div>
+  <div class="foot-links">
+    <a href="#">プライバシーポリシー</a>
+    <a href="#">利用規約</a>
+    <a href="#">お問い合わせ</a>
+  </div>
+  <div class="foot-copy">© 2026 Noticed. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
