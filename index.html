@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Noticed</title>
+<script>
+// Detect browser language and redirect accordingly.
+// Japanese browsers go to /ja, all others go to /en.
+(function() {
+  var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+  var target = lang.startsWith('ja') ? '/ja/' : '/en/';
+  window.location.replace(target);
+})();
+</script>
+<noscript>
+  <meta http-equiv="refresh" content="0; url=/en/">
+</noscript>
+</head>
+<body>
+<p style="font-family:sans-serif;text-align:center;padding:40px;color:#888">
+  Redirecting... / <a href="/en/">English</a> / <a href="/ja/">日本語</a>
+</p>
+</body>
+</html>
