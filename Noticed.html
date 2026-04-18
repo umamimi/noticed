@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Noticed — 存在に気づく。気づかれる。</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Shippori+Mincho:wght@400;500;600&family=Inter+Tight:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+/* =========================================================
+   Noticed — minimal, sacred. Deep night, a single point of light.
+   ========================================================= */
+
+:root{
+  /* dark defaults */
+  --bg: #07080b;
+  --bg-2: #0b0d11;
+  --ink: #e9ecf1;
+  --ink-2: #b9bec8;
+  --ink-3: #777c88;
+  --ink-4: #3d424d;
+  --line: rgba(233,236,241,0.08);
+  --line-2: rgba(233,236,241,0.14);
+  --signal: #f6efe0;   /* warm ivory — "the light" */
+  --signal-glow: rgba(246,239,224,0.55);
+  --accent: #c8a56b;   /* antique gold for marks/numerals */
+  --paper: #f3efe6;
+
+  --serif: "Cormorant Garamond", "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --jaserif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", "Cormorant Garamond", serif;
+  --sans: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  --ease: cubic-bezier(.2,.6,.2,1);
+}
+
+html[data-theme="light"]{
+  --bg: #f6f2e9;
+  --bg-2: #efeadf;
+  --ink: #17181b;
+  --ink-2: #3e4149;
+  --ink-3: #7b7d85;
+  --ink-4: #b6b2a6;
+  --line: rgba(23,24,27,0.10);
+  --line-2: rgba(23,24,27,0.18);
+  --signal: #17181b;
+  --signal-glow: rgba(23,24,27,0.25);
+  --accent: #8f6a2a;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);}
+html{scroll-behavior:smooth}
+body{
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+html[lang="ja"] body{ font-family: var(--sans); letter-spacing: 0.04em; }
+
+::selection{ background: var(--signal); color: var(--bg); }
+
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* ------- page shell ------- */
+.page{
+  position:relative;
+  min-height:100vh;
+  overflow:hidden;
+}
+/* grain + faint star field on dark */
+.page::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.35;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.45) 50%, transparent 51%),
+    radial-gradient(1px 1px at 72% 8%,  rgba(255,255,255,.28) 50%, transparent 51%),
+    radial-gradient(1px 1px at 38% 64%, rgba(255,255,255,.22) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 42%, rgba(255,255,255,.30) 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 82%, rgba(255,255,255,.18) 50%, transparent 51%),
+    radial-gradient(1px 1px at 58% 92%, rgba(255,255,255,.22) 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 52%,  rgba(255,255,255,.24) 50%, transparent 51%),
+    radial-gradient(1px 1px at 92% 72%, rgba(255,255,255,.18) 50%, transparent 51%);
+  mix-blend-mode: screen;
+}
+html[data-theme="light"] .page::before{ display:none }
+.page::after{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(246,239,224,0.06), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(200,165,107,0.04), transparent 60%);
+}
+html[data-theme="light"] .page::after{
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(23,24,27,0.04), transparent 55%);
+}
+
+/* noise overlay */
+.noise{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  opacity:.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.7'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+/* ------- top bar ------- */
+.nav{
+  position:fixed; top:0; left:0; right:0;
+  z-index:20;
+  padding: 22px 32px;
+  display:flex; align-items:center; justify-content:space-between;
+  color:var(--ink-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: linear-gradient(to bottom, rgba(7,8,11,.6), rgba(7,8,11,0));
+}
+html[data-theme="light"] .nav{
+  background: linear-gradient(to bottom, rgba(246,242,233,.7), rgba(246,242,233,0));
+}
+.nav .mark{
+  display:flex; align-items:center; gap:10px;
+  color: var(--ink);
+  letter-spacing: .24em;
+}
+.nav .mark .dot{
+  width:6px; height:6px; border-radius:50%;
+  background: var(--signal);
+  box-shadow: 0 0 10px var(--signal-glow);
+  animation: pulse 3.6s var(--ease) infinite;
+}
+.nav .right{ display:flex; align-items:center; gap: 22px; }
+.nav .lang{ display:flex; align-items:center; gap:10px; }
+.nav .lang button{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: var(--ink-3);
+  padding: 4px 2px;
+  border-bottom: 1px solid transparent;
+  transition: color .3s var(--ease), border-color .3s var(--ease);
+}
+.nav .lang button.on{ color: var(--ink); border-bottom-color: var(--ink); }
+.nav .lang .sep{ color: var(--ink-4); }
+
+/* ------- hero ------- */
+.hero{
+  position:relative; z-index:2;
+  min-height: 100vh;
+  display:grid;
+  grid-template-columns: 1fr;
+  align-items:center; justify-items:center;
+  padding: 120px 32px 80px;
+}
+.hero-inner{
+  width: min(1180px, 100%);
+  display:grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 48px;
+  align-items:center;
+}
+@media (max-width: 900px){
+  .hero-inner{ grid-template-columns: 1fr; gap: 40px; }
+}
+.hero .eyebrow{
+  font-family: var(--mono);
+  color: var(--ink-3);
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  display:flex; align-items:center; gap:10px;
+  margin-bottom: 28px;
+}
+.hero .eyebrow::before{
+  content:""; width:24px; height:1px; background: var(--ink-4);
+}
+.hero h1{
+  font-family: var(--serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(44px, 6.5vw, 96px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin: 0 0 28px;
+  color: var(--ink);
+}
+html[lang="ja"] .hero h1{
+  font-family: var(--jaserif);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  font-size: clamp(32px, 4.6vw, 64px);
+}
+.hero h1 .soft{ color: var(--ink-2); font-style: normal; }
+html[lang="ja"] .hero h1 .soft{ color: var(--ink-2); }
+.hero .lede{
+  color: var(--ink-2);
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 44ch;
+  margin: 0 0 40px;
+}
+html[lang="ja"] .hero .lede{ font-size: 15.5px; line-height: 2.0; }
+
+.hero .cta-row{ display:flex; flex-wrap:wrap; gap: 14px; align-items:center; }
+.btn{
+  display:inline-flex; align-items:center; gap:12px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 400;
+  letter-spacing: .06em;
+  transition: all .4s var(--ease);
+}
+.btn .arr{
+  display:inline-block;
+  transition: transform .4s var(--ease);
+}
+.btn:hover .arr{ transform: translateX(4px); }
+.btn-primary{
+  background: var(--signal);
+  color: var(--bg);
+  box-shadow: 0 0 0 0 var(--signal-glow);
+}
+.btn-primary:hover{ box-shadow: 0 0 40px -4px var(--signal-glow); }
+.btn-ghost{
+  color: var(--ink-2);
+  border: 1px solid var(--line-2);
+}
+.btn-ghost:hover{ color: var(--ink); border-color: var(--ink-3); }
+
+/* ---- the two-point stage ---- */
+.stage{
+  position:relative;
+  aspect-ratio: 1/1;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display:grid; place-items:center;
+  justify-self:center;
+}
+.stage svg{ width:100%; height:100%; display:block; overflow:visible; }
+
+/* the reading labels on the stage */
+.stage .labels{
+  position:absolute; inset:0;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  pointer-events:none;
+}
+.stage .labels .l{
+  position:absolute;
+  display:flex; align-items:center; gap:8px;
+  white-space:nowrap;
+}
+.stage .labels .l.l-a{ left: 4%; top: 38%; }
+.stage .labels .l.l-b{ right: 4%; top: 58%; text-align:right; }
+.stage .labels .l .tick{ width: 18px; height:1px; background: var(--ink-4); }
+.stage .labels .l.l-b .tick{ order:2 }
+.stage .labels .coords{
+  position:absolute; left:50%; bottom:-6px; transform:translateX(-50%);
+  color: var(--ink-4);
+  font-size: 10px;
+  letter-spacing: .3em;
+}
+
+/* ------- sections ------- */
+section{ position:relative; z-index:2; padding: 140px 32px; }
+.wrap{ width: min(1180px, 100%); margin:0 auto; }
+.section-label{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display:flex; align-items:center; gap: 14px;
+  margin-bottom: 40px;
+}
+.section-label::before{
+  content:""; width:40px; height:1px; background: var(--ink-4);
+}
+.section-label .num{ color: var(--accent); }
+h2.display{
+  font-family: var(--serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(36px, 4.8vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -0.005em;
+  margin: 0 0 72px;
+  max-width: 22ch;
+  color: var(--ink);
+}
+html[lang="ja"] h2.display{
+  font-family: var(--jaserif);
+  font-style:normal;
+  font-weight:500;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  font-size: clamp(26px, 3.6vw, 46px);
+  max-width: 20ch;
+}
+h2.display .soft{ color: var(--ink-2); font-style:normal; font-weight:300; }
+
+/* ---- how it works ---- */
+.steps{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 820px){ .steps{ grid-template-columns: 1fr; } }
+.step{
+  padding: 48px 36px 56px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position:relative;
+  transition: background .5s var(--ease);
+}
+.step:last-child{ border-right: 0; }
+@media (max-width: 820px){ .step{ border-right:0; } }
+.step:hover{ background: rgba(246,239,224,0.02); }
+html[data-theme="light"] .step:hover{ background: rgba(23,24,27,0.02); }
+.step .num{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 44px;
+  color: var(--accent);
+  line-height:1;
+  margin-bottom: 28px;
+  font-weight:300;
+}
+.step h3{
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  line-height:1.25;
+  margin: 0 0 14px;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+html[lang="ja"] .step h3{
+  font-family: var(--jaserif);
+  font-style:normal;
+  font-weight:500;
+  font-size: 21px;
+  line-height: 1.5;
+}
+.step p{
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.75;
+  margin:0;
+}
+html[lang="ja"] .step p{ font-size: 14px; line-height: 1.95; }
+.step .mini{
+  margin-top: 32px;
+  height: 56px;
+  display:flex; align-items:center;
+}
+
+/* ---- the promise (covenant) ---- */
+.promise{
+  background: linear-gradient(to bottom, transparent, rgba(246,239,224,0.02), transparent);
+}
+html[data-theme="light"] .promise{
+  background: linear-gradient(to bottom, transparent, rgba(23,24,27,0.02), transparent);
+}
+.covenant{
+  margin: 0 auto;
+  max-width: 820px;
+  border: 1px solid var(--line-2);
+  padding: 72px 64px 56px;
+  position:relative;
+  background:
+    linear-gradient(135deg, rgba(246,239,224,0.015) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 0%, rgba(246,239,224,0.03), transparent 70%);
+}
+html[data-theme="light"] .covenant{
+  background:
+    linear-gradient(135deg, rgba(23,24,27,0.015) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 0%, rgba(23,24,27,0.03), transparent 70%);
+}
+.covenant::before, .covenant::after{
+  content:""; position:absolute;
+  width: 18px; height:18px;
+  border: 1px solid var(--accent);
+  opacity:.6;
+}
+.covenant::before{ top:-1px; left:-1px; border-right:0; border-bottom:0; }
+.covenant::after{ bottom:-1px; right:-1px; border-left:0; border-top:0; }
+.covenant .seal{
+  position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+  background: var(--bg);
+  padding: 0 18px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .36em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.covenant .preamble{
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight:300;
+  text-align:center;
+  color: var(--ink-2);
+  font-size: 16px;
+  margin: 0 0 48px;
+  line-height: 1.7;
+}
+html[lang="ja"] .covenant .preamble{
+  font-family: var(--jaserif); font-style:normal; font-weight:400;
+  font-size: 14.5px;
+}
+.articles{
+  list-style:none; margin:0; padding:0;
+  counter-reset: art;
+}
+.article{
+  counter-increment: art;
+  display:grid;
+  grid-template-columns: 64px 1fr;
+  gap: 24px;
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+}
+.article:last-child{ border-bottom: 1px solid var(--line); }
+.article .roman{
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent);
+  font-size: 14px;
+  padding-top: 4px;
+  letter-spacing:.1em;
+}
+.article h4{
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 19px;
+  margin: 0 0 6px;
+  color: var(--ink);
+  letter-spacing:.01em;
+}
+html[lang="ja"] .article h4{ font-family: var(--jaserif); font-size: 16px; font-weight:500; }
+.article p{
+  margin:0; color: var(--ink-2); font-size: 14px; line-height: 1.75;
+}
+html[lang="ja"] .article p{ font-size: 13.5px; line-height: 1.95; }
+.covenant .signature{
+  display:flex; justify-content:space-between; align-items:flex-end;
+  margin-top: 48px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.covenant .sig-line{
+  border-top: 1px solid var(--line-2);
+  padding-top: 10px;
+  min-width: 160px;
+  color: var(--ink-2);
+}
+
+/* ---- philosophy ---- */
+.philosophy{ text-align: left; }
+.quote{
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(28px, 3.4vw, 42px);
+  line-height: 1.4;
+  color: var(--ink);
+  margin: 0 auto 48px;
+  max-width: 26ch;
+  letter-spacing: -0.005em;
+  position:relative;
+}
+html[lang="ja"] .quote{
+  font-family: var(--jaserif); font-style:normal; font-weight:500;
+  font-size: clamp(20px, 2.6vw, 30px);
+  line-height: 1.85;
+  letter-spacing: 0.04em;
+}
+.philosophy .col2{
+  display:grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  max-width: 900px; margin: 0 auto;
+}
+@media (max-width: 760px){ .philosophy .col2{ grid-template-columns: 1fr; gap: 32px; } }
+.philosophy .col2 p{
+  color: var(--ink-2); font-size: 14.5px; line-height: 1.85; margin:0;
+}
+html[lang="ja"] .philosophy .col2 p{ font-size: 13.5px; line-height: 2.05; }
+
+/* ---- coming soon / signup ---- */
+.cs{
+  text-align:center;
+  padding-bottom: 160px;
+}
+.cs .lamp{
+  width: 10px; height: 10px; border-radius:50%;
+  background: var(--signal);
+  box-shadow: 0 0 28px 4px var(--signal-glow);
+  margin: 0 auto 40px;
+  animation: pulse 3.6s var(--ease) infinite;
+}
+.cs h2{ margin-left:auto; margin-right:auto; text-align:center; }
+.cs .sub{
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.cs form{
+  display:flex;
+  align-items:center;
+  max-width: 460px;
+  margin: 40px auto 14px;
+  border-bottom: 1px solid var(--line-2);
+  transition: border-color .3s var(--ease);
+}
+.cs form:focus-within{ border-bottom-color: var(--ink); }
+.cs input{
+  flex: 1;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  padding: 16px 4px;
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+.cs input::placeholder{ color: var(--ink-3); }
+.cs form button{
+  padding: 16px 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.cs form button:hover{ color: var(--accent); }
+.cs .fine{
+  color: var(--ink-3); font-size: 12px;
+  max-width: 440px; margin: 0 auto;
+}
+
+/* ---- footer ---- */
+footer{
+  position:relative; z-index:2;
+  border-top: 1px solid var(--line);
+  padding: 48px 32px;
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+footer .fwrap{ max-width: 1180px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px;}
+footer a{ color: var(--ink-3); transition: color .3s var(--ease); }
+footer a:hover{ color: var(--ink); }
+footer .links{ display:flex; gap: 28px; flex-wrap:wrap; }
+
+/* ---- animations ---- */
+@keyframes pulse{
+  0%,100%{ opacity:.55; transform:scale(1); }
+  50%{ opacity:1; transform:scale(1.08); }
+}
+.reveal{
+  opacity:0; transform: translateY(14px);
+  transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
+}
+.reveal.in{ opacity:1; transform:none; }
+.reveal.d1{ transition-delay: .08s }
+.reveal.d2{ transition-delay: .18s }
+.reveal.d3{ transition-delay: .28s }
+.reveal.d4{ transition-delay: .38s }
+.reveal.d5{ transition-delay: .48s }
+
+/* ---- tweaks panel ---- */
+.tweaks{
+  position:fixed; right: 24px; bottom: 24px;
+  z-index: 40;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  padding: 18px 20px;
+  display:none;
+  min-width: 240px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--ink-2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.tweaks.on{ display:block; }
+.tweaks h5{
+  margin:0 0 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  color: var(--accent);
+}
+.tweaks .row{ display:flex; align-items:center; justify-content:space-between; margin: 10px 0; gap: 12px; }
+.tweaks .pill{
+  display:inline-flex; gap:2px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 3px;
+}
+.tweaks .pill button{
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--ink-3);
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.tweaks .pill button.on{ background: var(--ink); color: var(--bg); }
+
+/* ======== scrollbar hide fine ======== */
+body::-webkit-scrollbar{ width: 10px; height: 10px; }
+body::-webkit-scrollbar-track{ background: transparent; }
+body::-webkit-scrollbar-thumb{ background: var(--line-2); border-radius: 999px; }
+
+</style>
+</head>
+<body>
+<div class="page" data-screen-label="Noticed LP">
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav">
+    <div class="mark"><span class="dot"></span><span data-i18n="brand">Noticed</span></div>
+    <div class="right">
+      <div class="lang">
+        <button data-lang="ja" class="on">JA</button>
+        <span class="sep">/</span>
+        <button data-lang="en">EN</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero" data-screen-label="01 Hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="eyebrow reveal" data-i18n="hero_eyebrow">A QUIET SIGNAL · NO.001</div>
+        <h1 class="reveal d1">
+          <span data-i18n="hero_h1_line1">ひとりじゃないと思える瞬間を、</span><br/>
+          <span class="soft" data-i18n="hero_h1_line2">どこかにいる誰かと。</span>
+        </h1>
+        <p class="lede reveal d2" data-i18n="hero_lede">
+          飲み会で、会議で、休憩時間で。小さな集団の中で孤独を感じた瞬間に、ワンタップ。匿名の誰かが、あなたの存在に気づきます。
+        </p>
+        <div class="cta-row reveal d3">
+          <a class="btn btn-primary" href="#signup">
+            <span data-i18n="cta_primary">リリースを知らせてほしい</span>
+            <span class="arr">→</span>
+          </a>
+          <a class="btn btn-ghost" href="#how">
+            <span data-i18n="cta_ghost">仕組みを見る</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Two points synchronizing -->
+      <div class="stage reveal d2" aria-hidden="true">
+        <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.9"/>
+              <stop offset="40%" stop-color="var(--signal)" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glowB" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.9"/>
+              <stop offset="40%" stop-color="var(--signal)" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- thin guide circles (sacred geometry) -->
+          <circle cx="250" cy="250" r="220" fill="none" stroke="currentColor" stroke-opacity=".06" />
+          <circle cx="250" cy="250" r="170" fill="none" stroke="currentColor" stroke-opacity=".05" />
+          <circle cx="250" cy="250" r="120" fill="none" stroke="currentColor" stroke-opacity=".04" />
+          <line x1="250" y1="40" x2="250" y2="460" stroke="currentColor" stroke-opacity=".05"/>
+          <line x1="40" y1="250" x2="460" y2="250" stroke="currentColor" stroke-opacity=".05"/>
+
+          <!-- orbit ellipse for the two points -->
+          <ellipse cx="250" cy="250" rx="150" ry="60" fill="none" stroke="currentColor" stroke-opacity=".1" stroke-dasharray="1 4"/>
+
+          <!-- Point A -->
+          <g class="pA">
+            <circle cx="0" cy="0" r="48" fill="url(#glowA)"/>
+            <circle cx="0" cy="0" r="5" fill="var(--signal)"/>
+          </g>
+          <!-- Point B -->
+          <g class="pB">
+            <circle cx="0" cy="0" r="48" fill="url(#glowB)"/>
+            <circle cx="0" cy="0" r="5" fill="var(--signal)"/>
+          </g>
+
+          <!-- pulse rings (emit on sync) -->
+          <circle class="ring" cx="250" cy="250" r="10" fill="none" stroke="var(--signal)" stroke-opacity=".4"/>
+          <circle class="ring2" cx="250" cy="250" r="10" fill="none" stroke="var(--signal)" stroke-opacity=".25"/>
+
+          <!-- corner ticks -->
+          <g fill="none" stroke="currentColor" stroke-opacity=".25">
+            <path d="M30 50 L30 30 L50 30"/>
+            <path d="M470 30 L450 30 M470 30 L470 50 M470 30 L470 30"/>
+            <path d="M450 30 L470 30 L470 50"/>
+            <path d="M30 450 L30 470 L50 470"/>
+            <path d="M470 470 L470 450 M470 470 L450 470"/>
+          </g>
+        </svg>
+        <div class="labels">
+          <div class="l l-a"><span class="tick"></span><span>NODE · A</span></div>
+          <div class="l l-b"><span class="tick"></span><span>NODE · B</span></div>
+          <div class="coords">LAT 35.68° · LON 139.77° · <span class="sync-state">SYNCING</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how" data-screen-label="02 How it works">
+    <div class="wrap">
+      <div class="section-label reveal"><span class="num">I.</span><span data-i18n="how_label">How it works</span></div>
+      <h2 class="display reveal d1">
+        <span data-i18n="how_h2_a">ボタンは2つだけ。</span><br/>
+        <span class="soft" data-i18n="how_h2_b">言葉は、いらない。</span>
+      </h2>
+      <div class="steps">
+        <div class="step reveal d1">
+          <div class="num">01</div>
+          <h3 data-i18n="step1_h">孤独を感じたら、タップ</h3>
+          <p data-i18n="step1_p">飲み会で話題に入れないとき、会議で透明人間のように感じたとき。ポケットからスマホを出して、ボタンを1回押すだけ。</p>
+          <div class="mini">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <circle cx="28" cy="28" r="27" stroke="currentColor" stroke-opacity=".12"/>
+              <circle cx="28" cy="28" r="4" fill="var(--signal)"/>
+              <circle cx="28" cy="28" r="10" stroke="var(--signal)" stroke-opacity=".4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="step reveal d2">
+          <div class="num">02</div>
+          <h3 data-i18n="step2_h">匿名の誰かに届く</h3>
+          <p data-i18n="step2_p">あなたのシグナルは、匿名のまま誰かの通知に届きます。「誰かが、あなたの存在を必要としています」と。</p>
+          <div class="mini">
+            <svg width="96" height="56" viewBox="0 0 96 56" fill="none">
+              <circle cx="12" cy="28" r="4" fill="var(--signal)"/>
+              <circle cx="84" cy="28" r="4" fill="var(--signal)" opacity=".3"/>
+              <line x1="16" y1="28" x2="80" y2="28" stroke="currentColor" stroke-opacity=".3" stroke-dasharray="2 3"/>
+              <path d="M74 22 L82 28 L74 34" stroke="var(--signal)" stroke-opacity=".6" fill="none"/>
+            </svg>
+          </div>
+        </div>
+        <div class="step reveal d3">
+          <div class="num">03</div>
+          <h3 data-i18n="step3_h">そばにいるよ、と返す</h3>
+          <p data-i18n="step3_p">受け取った人は「そばにいるよ」をタップ。あなたに通知が届きます。「誰かがあなたの存在に気づきました」と。</p>
+          <div class="mini">
+            <svg width="96" height="56" viewBox="0 0 96 56" fill="none">
+              <circle cx="12" cy="28" r="4" fill="var(--signal)"/>
+              <circle cx="84" cy="28" r="4" fill="var(--signal)"/>
+              <line x1="16" y1="28" x2="80" y2="28" stroke="var(--signal)" stroke-opacity=".35"/>
+              <circle cx="48" cy="28" r="14" stroke="var(--signal)" stroke-opacity=".25" fill="none"/>
+              <circle cx="48" cy="28" r="22" stroke="var(--signal)" stroke-opacity=".12" fill="none"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== THE PROMISE / COVENANT ===== -->
+  <section class="promise" data-screen-label="03 Our promise">
+    <div class="wrap">
+      <div class="section-label reveal"><span class="num">II.</span><span data-i18n="promise_label">Our promise</span></div>
+      <h2 class="display reveal d1" style="margin-bottom:56px">
+        <span data-i18n="promise_h2_a">安心して使えること。</span><br/>
+        <span class="soft" data-i18n="promise_h2_b">それが最優先。</span>
+      </h2>
+
+      <article class="covenant reveal d2">
+        <div class="seal" data-i18n="covenant_seal">— Covenant —</div>
+        <p class="preamble" data-i18n="covenant_preamble">
+          私たちは、この製品を使うすべての人に対し、以下のことを約束します。
+        </p>
+        <ol class="articles">
+          <li class="article">
+            <div class="roman">Article I.</div>
+            <div>
+              <h4 data-i18n="p1_h">データを売らない</h4>
+              <p data-i18n="p1_p">あなたの孤独は、広告の材料にはなりません。データの外部販売は一切行いません。</p>
+            </div>
+          </li>
+          <li class="article">
+            <div class="roman">Article II.</div>
+            <div>
+              <h4 data-i18n="p2_h">個人を特定しない</h4>
+              <p data-i18n="p2_p">氏名、メール、電話番号は取得しません。匿名IDだけで動作します。</p>
+            </div>
+          </li>
+          <li class="article">
+            <div class="roman">Article III.</div>
+            <div>
+              <h4 data-i18n="p3_h">孤独の瞬間に広告を出さない</h4>
+              <p data-i18n="p3_p">辛い瞬間に商品を勧めることはしません。コア機能は永久に無料です。</p>
+            </div>
+          </li>
+          <li class="article">
+            <div class="roman">Article IV.</div>
+            <div>
+              <h4 data-i18n="p4_h">依存させない</h4>
+              <p data-i18n="p4_p">1日3回まで。バッジ、ストリーク、ポイントはありません。必要なときだけ使ってください。</p>
+            </div>
+          </li>
+        </ol>
+        <div class="signature">
+          <div class="sig-line" data-i18n="sig_team">— Noticed team</div>
+          <div class="sig-line" data-i18n="sig_date">MMXXVI · Tokyo</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== PHILOSOPHY ===== -->
+  <section class="philosophy" data-screen-label="04 Philosophy">
+    <div class="wrap">
+      <div class="section-label reveal"><span class="num">III.</span><span data-i18n="phil_label">Philosophy</span></div>
+      <h2 class="display reveal d1" style="margin:0 auto 56px; text-align:left">
+        <span data-i18n="phil_h2_a">会話は必要ない。</span><br/>
+        <span class="soft" data-i18n="phil_h2_b">ただ、気づかれるだけでいい。</span>
+      </h2>
+      <div class="col2">
+        <p class="reveal d1" data-i18n="phil_p1">
+          社会心理学の研究は、匿名の相手からの最小限のシグナルでさえ、人の「包摂感」を回復させることを示しています。大切なのは「何を言われるか」ではなく、「誰かに認識されたこと」そのものです。
+        </p>
+        <p class="reveal d2" data-i18n="phil_p2">
+          自分が助かりたくて押したボタンが、いつの間にか誰かの助けになる。一人ひとりのつながりが広がり、誰もが抱えうる孤独感の軽減を目指します。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMING SOON ===== -->
+  <section id="signup" class="cs" data-screen-label="05 Coming soon">
+    <div class="wrap" style="max-width: 640px">
+      <div class="lamp reveal" aria-hidden="true"></div>
+      <div class="section-label reveal d1" style="justify-content:center"><span class="num">IV.</span><span data-i18n="cs_label">Coming soon</span></div>
+      <h2 class="display reveal d2" style="text-align:center; margin: 0 auto 12px;">
+        <span data-i18n="cs_h2">まもなく、あなたの手元に。</span>
+      </h2>
+      <p class="reveal d3" style="color:var(--ink-2); max-width:36ch; margin: 0 auto 8px;" data-i18n="cs_sub">
+        Noticedは現在開発中です。リリース時にお知らせします。
+      </p>
+      <form class="reveal d4" onsubmit="event.preventDefault(); this.querySelector('button').innerText='THANK YOU · 登録完了';">
+        <input type="email" required placeholder="name@example.com" data-i18n-ph="cs_ph"/>
+        <button type="submit" data-i18n="cs_btn">Notify me</button>
+      </form>
+      <div class="fine reveal d5" data-i18n="cs_fine">リリース通知のみに使用します。広告・第三者への共有は行いません。</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="fwrap">
+      <div>© 2026 Noticed. All rights reserved.</div>
+      <div class="links">
+        <a href="#" data-i18n="f_privacy">プライバシーポリシー</a>
+        <a href="#" data-i18n="f_terms">利用規約</a>
+        <a href="#" data-i18n="f_contact">お問い合わせ</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== TWEAKS ===== -->
+  <aside class="tweaks" id="tweaks">
+    <h5>Tweaks</h5>
+    <div class="row">
+      <span>Theme</span>
+      <div class="pill" data-pill="theme">
+        <button data-val="dark" class="on">Dark</button>
+        <button data-val="light">Light</button>
+      </div>
+    </div>
+    <div class="row">
+      <span>Hero</span>
+      <div class="pill" data-pill="hero">
+        <button data-val="orbit" class="on">Orbit</button>
+        <button data-val="lamp">Lamp</button>
+        <button data-val="type">Type</button>
+      </div>
+    </div>
+    <div class="row">
+      <span>Language</span>
+      <div class="pill" data-pill="lang">
+        <button data-val="ja" class="on">JA</button>
+        <button data-val="en">EN</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+/* ============================================
+   I18N
+   ============================================ */
+const I18N = {
+  ja: {
+    brand: "Noticed",
+    hero_eyebrow: "A QUIET SIGNAL · NO.001",
+    hero_h1_line1: "ひとりじゃないと思える瞬間を、",
+    hero_h1_line2: "どこかにいる誰かと。",
+    hero_lede: "飲み会で、会議で、休憩時間で。小さな集団の中で孤独を感じた瞬間に、ワンタップ。匿名の誰かが、あなたの存在に気づきます。",
+    cta_primary: "リリースを知らせてほしい",
+    cta_ghost: "仕組みを見る",
+    how_label: "How it works",
+    how_h2_a: "ボタンは2つだけ。",
+    how_h2_b: "言葉は、いらない。",
+    step1_h: "孤独を感じたら、タップ",
+    step1_p: "飲み会で話題に入れないとき、会議で透明人間のように感じたとき。ポケットからスマホを出して、ボタンを1回押すだけ。",
+    step2_h: "匿名の誰かに届く",
+    step2_p: "あなたのシグナルは、匿名のまま誰かの通知に届きます。「誰かが、あなたの存在を必要としています」と。",
+    step3_h: "そばにいるよ、と返す",
+    step3_p: "受け取った人は「そばにいるよ」をタップ。あなたに通知が届きます。「誰かがあなたの存在に気づきました」と。",
+    promise_label: "Our promise",
+    promise_h2_a: "安心して使えること。",
+    promise_h2_b: "それが最優先。",
+    covenant_seal: "— 誓 約 —",
+    covenant_preamble: "私たちは、この製品を使うすべての人に対し、以下のことを約束します。",
+    p1_h: "データを売らない",
+    p1_p: "あなたの孤独は、広告の材料にはなりません。データの外部販売は一切行いません。",
+    p2_h: "個人を特定しない",
+    p2_p: "氏名、メール、電話番号は取得しません。匿名IDだけで動作します。",
+    p3_h: "孤独の瞬間に広告を出さない",
+    p3_p: "辛い瞬間に商品を勧めることはしません。コア機能は永久に無料です。",
+    p4_h: "依存させない",
+    p4_p: "1日3回まで。バッジ、ストリーク、ポイントはありません。必要なときだけ使ってください。",
+    sig_team: "— Noticed チーム",
+    sig_date: "令和八年・東京",
+    phil_label: "Philosophy",
+    phil_h2_a: "会話は必要ない。",
+    phil_h2_b: "ただ、気づかれるだけでいい。",
+    phil_p1: "社会心理学の研究は、匿名の相手からの最小限のシグナルでさえ、人の「包摂感」を回復させることを示しています。大切なのは「何を言われるか」ではなく、「誰かに認識されたこと」そのものです。",
+    phil_p2: "自分が助かりたくて押したボタンが、いつの間にか誰かの助けになる。一人ひとりのつながりが広がり、誰もが抱えうる孤独感の軽減を目指します。",
+    cs_label: "Coming soon",
+    cs_h2: "まもなく、あなたの手元に。",
+    cs_sub: "Noticedは現在開発中です。リリース時にお知らせします。",
+    cs_ph: "your@email.com",
+    cs_btn: "登録する",
+    cs_fine: "リリース通知のみに使用します。広告・第三者への共有は行いません。",
+    f_privacy: "プライバシーポリシー",
+    f_terms: "利用規約",
+    f_contact: "お問い合わせ"
+  },
+  en: {
+    brand: "Noticed",
+    hero_eyebrow: "A QUIET SIGNAL · NO.001",
+    hero_h1_line1: "You're not alone.",
+    hero_h1_line2: "Someone just noticed.",
+    hero_lede: "At a party, in a meeting, during a break. When loneliness hits in a small group, one tap. An anonymous stranger notices you exist.",
+    cta_primary: "Notify me at launch",
+    cta_ghost: "See how it works",
+    how_label: "How it works",
+    how_h2_a: "Two buttons.",
+    how_h2_b: "No words needed.",
+    step1_h: "Tap when lonely",
+    step1_p: "Can't join the conversation at a dinner party. Feeling invisible in a meeting. Take out your phone and press one button.",
+    step2_h: "Reaches a stranger",
+    step2_p: "Your signal reaches someone anonymous. Their notification says: \"Someone needs you to know they exist.\"",
+    step3_h: "They say: I'm here",
+    step3_p: "They tap \"I'm here.\" A notification comes back to you: \"Someone just noticed you exist.\"",
+    promise_label: "Our promise",
+    promise_h2_a: "Safe to use.",
+    promise_h2_b: "That comes first.",
+    covenant_seal: "— Covenant —",
+    covenant_preamble: "To every person who uses this product, we hereby promise the following.",
+    p1_h: "We don't sell your data",
+    p1_p: "Your loneliness is not ad material. We never sell user data to third parties.",
+    p2_h: "You stay anonymous",
+    p2_p: "No name, email, or phone number required. Just an anonymous ID.",
+    p3_h: "No ads in lonely moments",
+    p3_p: "We won't push products when you're hurting. The core feature stays free, forever.",
+    p4_h: "We won't hook you",
+    p4_p: "Three taps per day, max. No badges, streaks, or points. Use it only when you need it.",
+    sig_team: "— The Noticed team",
+    sig_date: "MMXXVI · Tokyo",
+    phil_label: "Philosophy",
+    phil_h2_a: "No conversation needed.",
+    phil_h2_b: "Just being noticed is enough.",
+    phil_p1: "Social psychology research shows that even a minimal signal from an anonymous person can restore a sense of belonging. What matters is not what is said, but that someone recognized you.",
+    phil_p2: "The button you press to help yourself quietly becomes help for someone else. Connection by connection, we work toward a world with a little less loneliness.",
+    cs_label: "Coming soon",
+    cs_h2: "Almost in your pocket.",
+    cs_sub: "Noticed is in development. We'll let you know at launch.",
+    cs_ph: "name@example.com",
+    cs_btn: "Notify me",
+    cs_fine: "For launch notifications only. We'll never share your email.",
+    f_privacy: "Privacy",
+    f_terms: "Terms",
+    f_contact: "Contact"
+  }
+};
+
+function setLang(l){
+  const d = I18N[l] || I18N.ja;
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.getAttribute('data-i18n');
+    if(d[k] != null) el.textContent = d[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const k = el.getAttribute('data-i18n-ph');
+    if(d[k] != null) el.setAttribute('placeholder', d[k]);
+  });
+  document.querySelectorAll('.nav .lang button').forEach(b=>{
+    b.classList.toggle('on', b.dataset.lang === l);
+  });
+  const pill = document.querySelector('[data-pill="lang"]');
+  if(pill) pill.querySelectorAll('button').forEach(b=> b.classList.toggle('on', b.dataset.val === l));
+  try{ localStorage.setItem('noticed_lang', l); }catch(e){}
+}
+
+document.querySelectorAll('.nav .lang button').forEach(b=>{
+  b.addEventListener('click', ()=> setLang(b.dataset.lang));
+});
+
+/* ============================================
+   REVEAL ON SCROLL (subtle)
+   ============================================ */
+const io = new IntersectionObserver((ents)=>{
+  ents.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+// Safety net: reveal anything already in viewport on load (fixes cases where
+// IntersectionObserver doesn't fire for already-visible elements).
+requestAnimationFrame(()=>{
+  document.querySelectorAll('.reveal').forEach(el=>{
+    const r = el.getBoundingClientRect();
+    if(r.top < window.innerHeight && r.bottom > 0){
+      el.classList.add('in');
+    }
+  });
+});
+
+/* ============================================
+   TWO POINTS — synchronized orbit
+   (hero variation: 'orbit' | 'lamp' | 'type')
+   ============================================ */
+const Stage = {
+  mode: 'orbit',
+  setMode(m){
+    this.mode = m;
+    const stage = document.querySelector('.stage');
+    if(!stage) return;
+    stage.dataset.mode = m;
+    stage.style.display = (m === 'type') ? 'none' : 'grid';
+    // adjust hero layout when hidden
+    const inner = document.querySelector('.hero-inner');
+    if(inner) inner.style.gridTemplateColumns = (m === 'type') ? '1fr' : '';
+  },
+  tick(t){
+    const stage = document.querySelector('.stage');
+    if(!stage) return;
+    const pA = stage.querySelector('.pA');
+    const pB = stage.querySelector('.pB');
+    const ring = stage.querySelector('.ring');
+    const ring2 = stage.querySelector('.ring2');
+    const state = stage.querySelector('.sync-state');
+    if(!pA || !pB) return;
+
+    const cx = 250, cy = 250;
+    const T = t / 1000;
+
+    if(this.mode === 'orbit'){
+      const rx = 150, ry = 60;
+      const a = T * 0.6;
+      const ax = cx + Math.cos(a) * rx;
+      const ay = cy + Math.sin(a) * ry;
+      const bx = cx + Math.cos(a + Math.PI) * rx;
+      const by = cy + Math.sin(a + Math.PI) * ry;
+      pA.setAttribute('transform', `translate(${ax} ${ay})`);
+      pB.setAttribute('transform', `translate(${bx} ${by})`);
+
+      // pulse: emit rings at sync points (when points cross horizontal axis)
+      const phase = ((T * 0.6) % (Math.PI)) / Math.PI; // 0..1
+      const r = 10 + phase * 240;
+      const o = (1 - phase) * 0.5;
+      ring.setAttribute('r', r);
+      ring.setAttribute('stroke-opacity', o);
+      ring2.setAttribute('r', r * 0.65);
+      ring2.setAttribute('stroke-opacity', o * 0.6);
+
+      if(state) state.textContent = Math.abs(Math.sin(a)) < 0.08 ? 'SYNC · OK' : 'SYNCING';
+    } else if(this.mode === 'lamp'){
+      // lamp: one center point, breathing glow
+      pA.setAttribute('transform', `translate(${cx} ${cy})`);
+      pB.setAttribute('transform', `translate(${cx} ${cy})`);
+      const phase = (Math.sin(T * 0.9) + 1) / 2;
+      const r = 60 + phase * 120;
+      ring.setAttribute('r', r);
+      ring.setAttribute('stroke-opacity', 0.12 + phase * 0.2);
+      ring2.setAttribute('r', r * 0.5);
+      ring2.setAttribute('stroke-opacity', 0.1 + phase * 0.15);
+      if(state) state.textContent = 'STILL';
+    }
+  }
+};
+
+function raf(t){ Stage.tick(t); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+
+/* ============================================
+   TWEAKS
+   ============================================ */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "dark",
+  "hero": "orbit",
+  "lang": "ja"
+}/*EDITMODE-END*/;
+
+function applyTweaks(t){
+  document.documentElement.setAttribute('data-theme', t.theme || 'dark');
+  Stage.setMode(t.hero || 'orbit');
+  setLang(t.lang || 'ja');
+  // sync pill UIs
+  Object.entries(t).forEach(([k,v])=>{
+    const pill = document.querySelector(`[data-pill="${k}"]`);
+    if(!pill) return;
+    pill.querySelectorAll('button').forEach(b=> b.classList.toggle('on', b.dataset.val === v));
+  });
+}
+
+// init from storage/defaults
+const initial = Object.assign({}, TWEAK_DEFAULTS);
+try{
+  const saved = JSON.parse(localStorage.getItem('noticed_tweaks') || '{}');
+  Object.assign(initial, saved);
+  const l = localStorage.getItem('noticed_lang');
+  if(l) initial.lang = l;
+}catch(e){}
+applyTweaks(initial);
+const tweaksState = { ...initial };
+
+// pill interactions
+document.querySelectorAll('.tweaks [data-pill]').forEach(pill=>{
+  const key = pill.dataset.pill;
+  pill.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      tweaksState[key] = b.dataset.val;
+      applyTweaks(tweaksState);
+      try{ localStorage.setItem('noticed_tweaks', JSON.stringify(tweaksState)); }catch(e){}
+      // persist via host if available
+      try{
+        window.parent.postMessage({ type:'__edit_mode_set_keys', edits: { [key]: b.dataset.val } }, '*');
+      }catch(e){}
+    });
+  });
+});
+
+// edit-mode protocol
+window.addEventListener('message', (e)=>{
+  const d = e.data || {};
+  if(d.type === '__activate_edit_mode'){
+    document.getElementById('tweaks').classList.add('on');
+  } else if(d.type === '__deactivate_edit_mode'){
+    document.getElementById('tweaks').classList.remove('on');
+  }
+});
+try{ window.parent.postMessage({ type:'__edit_mode_available' }, '*'); }catch(e){}
+
+</script>
+</body>
+</html>
