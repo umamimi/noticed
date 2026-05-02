@@ -898,8 +898,10 @@ body::-webkit-scrollbar-thumb{ background: var(--line-2); border-radius: 999px; 
       <p class="reveal d3" style="color:var(--ink-2); max-width:36ch; margin: 0 auto 8px;" data-i18n="cs_sub">
         Noticedは現在開発中です。リリース時にお知らせします。
       </p>
-      <form class="reveal d4" onsubmit="event.preventDefault(); this.querySelector('button').innerText='THANK YOU · 登録完了';">
-        <input type="email" required placeholder="name@example.com" data-i18n-ph="cs_ph"/>
+      <form class="reveal d4" action="https://assets.mailerlite.com/jsonp/2310018/forms/186352559402780613/subscribe" method="post" target="_blank" onsubmit="setTimeout(()=>{this.querySelector('button').innerText='THANK YOU · 登録完了'},100);">
+        <input type="email" required placeholder="name@example.com" data-i18n-ph="cs_ph" name="fields[email]" autocomplete="email"/>
+        <input type="hidden" name="ml-submit" value="1">
+        <input type="hidden" name="anticsrf" value="true">
         <button type="submit" data-i18n="cs_btn">Notify me</button>
       </form>
       <div class="fine reveal d5" data-i18n="cs_fine">リリース通知のみに使用します。広告・第三者への共有は行いません。</div>
