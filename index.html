@@ -904,10 +904,6 @@ body::-webkit-scrollbar-thumb{ background: var(--line-2); border-radius: 999px; 
       </p>
       <form class="reveal d4" action="https://assets.mailerlite.com/jsonp/2310018/forms/186352559402780613/subscribe" method="post" target="_blank" onsubmit="setTimeout(()=>{this.querySelector('button').innerText='THANK YOU · 登録完了'},100);">
         <input type="email" required placeholder="name@example.com" data-i18n-ph="cs_ph" name="fields[email]" autocomplete="email"/>
-         document.querySelectorAll('[data-i18n-href]').forEach(el=>{
-    const k = el.getAttribute('data-i18n-href');                                                                                                                                  
-    if(d[k] != null) el.setAttribute('href', d[k]);
-  });      
         <input type="hidden" name="ml-submit" value="1">
         <input type="hidden" name="anticsrf" value="true">
         <button type="submit" data-i18n="cs_btn">Notify me</button>
@@ -1071,6 +1067,11 @@ function setLang(l){
     const k = el.getAttribute('data-i18n-ph');
     if(d[k] != null) el.setAttribute('placeholder', d[k]);
   });
+   document.querySelectorAll('[data-i18n-href]').forEach(el=>{                                                                                                                   
+      const k = el.getAttribute('data-i18n-href');
+      if(d[k] != null) el.setAttribute('href', d[k]);                                                                                                                             
+    });           
+
   document.querySelectorAll('.nav .lang button').forEach(b=>{
     b.classList.toggle('on', b.dataset.lang === l);
   });
