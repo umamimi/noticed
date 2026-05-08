@@ -890,7 +890,7 @@ body::-webkit-scrollbar-thumb{ background: var(--line-2); border-radius: 999px; 
   <!-- ===== COMING SOON ===== -->
    <!-- TAKIBI Board link -->
 <div style="text-align:center; padding: 40px 24px 0;">
-  <a href="/board/" style="font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(200,165,107,0.3); padding-bottom: 4px; transition: border-color .3s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(200,165,107,0.3)'" data-i18n="takibi_link">焚き火ボードで、今の気持ちをくべる →</a>
+  <a href="/board/" style="font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(200,165,107,0.3); padding-bottom: 4px; transition: border-color .3s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(200,165,107,0.3)'" data-i18n="takibi_link" data-i18n-href="/en/board/">焚き火ボードで、今の気持ちをくべる →</a>
 </div>
   <section id="signup" class="cs" data-screen-label="05 Coming soon">
     <div class="wrap" style="max-width: 640px">
@@ -904,6 +904,10 @@ body::-webkit-scrollbar-thumb{ background: var(--line-2); border-radius: 999px; 
       </p>
       <form class="reveal d4" action="https://assets.mailerlite.com/jsonp/2310018/forms/186352559402780613/subscribe" method="post" target="_blank" onsubmit="setTimeout(()=>{this.querySelector('button').innerText='THANK YOU · 登録完了'},100);">
         <input type="email" required placeholder="name@example.com" data-i18n-ph="cs_ph" name="fields[email]" autocomplete="email"/>
+         document.querySelectorAll('[data-i18n-href]').forEach(el=>{
+    const k = el.getAttribute('data-i18n-href');                                                                                                                                  
+    if(d[k] != null) el.setAttribute('href', d[k]);
+  });      
         <input type="hidden" name="ml-submit" value="1">
         <input type="hidden" name="anticsrf" value="true">
         <button type="submit" data-i18n="cs_btn">Notify me</button>
