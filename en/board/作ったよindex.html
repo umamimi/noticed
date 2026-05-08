@@ -1,0 +1,472 @@
+  <!DOCTYPE html>                                                                                                                                                                 
+  <html lang="en">                                                                                                                                                                
+  <head>                                                                                                                                                                          
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">                                                                                      
+  <title>Noticed — TAKIBI Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">                                                                                                                     
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Shippori+Mincho:wght@400;500&family=Inter+Tight:wght@300;400;500&fami
+  ly=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">                                                                                                                      
+  <style>
+  :root{                                                                                                                                                                          
+    --bg:#07080b;--bg-2:#0b0d11;--bg-3:#0f1116;
+    --ink:#e9ecf1;--ink-2:#b9bec8;--ink-3:#777c88;--ink-4:#3d424d;                                                                                                                
+    --line:rgba(233,236,241,0.08);--line-2:rgba(233,236,241,0.14);                                                                                                                
+    --signal:#f6efe0;--signal-glow:rgba(246,239,224,0.55);                                                                                                                        
+    --accent:#c8a56b;                                                                                                                                                             
+    --serif:"Cormorant Garamond",serif;                                                                                                                                           
+    --sans:"Inter Tight",-apple-system,system-ui,sans-serif;                                                                                                                      
+    --mono:"JetBrains Mono",ui-monospace,monospace;                                                                                                                               
+    --ease:cubic-bezier(.2,.6,.2,1);                                                                                                                                              
+  }                                                                                                                                                                               
+  *{box-sizing:border-box;margin:0;padding:0}                                                                                                                                     
+  html{scroll-behavior:smooth}                                                                                                                                                    
+  body{                                                                                                                                                                           
+    background:var(--bg);color:var(--ink);
+    font-family:var(--sans);font-weight:300;font-size:16px;line-height:1.65;                                                                                                      
+    letter-spacing:0.04em;-webkit-font-smoothing:antialiased;                                                                                                                     
+    overflow-x:hidden;min-height:100vh;
+  }                                                                                                                                                                               
+  ::selection{background:var(--signal);color:var(--bg)}
+  a{color:inherit;text-decoration:none}                                                                                                                                           
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+                                                                                                                                                                                  
+  .page{position:relative;min-height:100vh}                                                                                                                                       
+  .page::before{                                                                                                                                                                  
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3;                                                                                                   
+    background-image:                                                                                                                                                             
+      radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.4) 50%,transparent 51%),
+      radial-gradient(1px 1px at 72% 8%,rgba(255,255,255,.25) 50%,transparent 51%),                                                                                               
+      radial-gradient(1px 1px at 38% 64%,rgba(255,255,255,.2) 50%,transparent 51%),                                                                                               
+      radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.28) 50%,transparent 51%),                                                                                              
+      radial-gradient(1px 1px at 22% 82%,rgba(255,255,255,.18) 50%,transparent 51%),                                                                                              
+      radial-gradient(1px 1px at 58% 92%,rgba(255,255,255,.2) 50%,transparent 51%);                                                                                               
+    mix-blend-mode:screen;                                                                                                                                                        
+  }                                                                                                                                                                               
+  .page::after{                                                                                                                                                                   
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at 50% 20%,rgba(246,239,224,0.05),transparent 55%);
+  }                                                                                                                                                                               
+  
+  /* nav */                                                                                                                                                                       
+  .nav{           
+    position:fixed;top:0;left:0;right:0;z-index:20;
+    padding:22px 32px;display:flex;align-items:center;justify-content:space-between;
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-2);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    background:linear-gradient(to bottom,rgba(7,8,11,.6),rgba(7,8,11,0));                                                                                                         
+  }                                                                                                                                                                               
+  .nav .mark{display:flex;align-items:center;gap:10px;color:var(--ink);letter-spacing:.24em}                                                                                      
+  .nav .mark .dot{                                                                                                                                                                
+    width:6px;height:6px;border-radius:50%;background:var(--signal);                                                                                                              
+    box-shadow:0 0 10px var(--signal-glow);animation:pulse 3.6s var(--ease) infinite;                                                                                             
+  }                                                                                                                                                                               
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 10px var(--signal-glow);transform:scale(1)}                                                                                                            
+    50%{box-shadow:0 0 20px var(--signal-glow);transform:scale(1.15)}                                                                                                             
+  }                                                                                                                                                                               
+  .nav .back{color:var(--ink-3);transition:color .3s var(--ease)}                                                                                                                 
+  .nav .back:hover{color:var(--ink)}                                                                                                                                              
+                                                                                                                                                                                  
+  /* main */
+  .wrap{max-width:640px;margin:0 auto;padding:0 24px;position:relative;z-index:2}                                                                                                 
+                                                                                                                                                                                  
+  .header{padding:120px 0 48px;text-align:center;border-bottom:1px solid var(--line);margin-bottom:40px}                                                                          
+  .header .orb{                                                                                                                                                                   
+    width:10px;height:10px;border-radius:50%;margin:0 auto 28px;                                                                                                                  
+    background:var(--signal);box-shadow:0 0 16px var(--signal-glow);
+    animation:pulse 3.6s var(--ease) infinite;                                                                                                                                    
+  }               
+  .header h1{                                                                                                                                                                     
+    font-family:var(--serif);font-weight:400;font-size:28px;
+    letter-spacing:0.06em;color:var(--ink);margin-bottom:14px;                                                                                                                    
+  }                                                                                                                                                                               
+  .header .sub{font-size:14px;color:var(--ink-3);line-height:1.9;max-width:36ch;margin:0 auto}                                                                                    
+  .header .count{                                                                                                                                                                 
+    margin-top:20px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+    color:var(--ink-4);text-transform:uppercase;                                                                                                                                  
+  }                                                                                                                                                                               
+                                                                                                                                                                                  
+  /* input */                                                                                                                                                                     
+  .signal-input{  
+    background:var(--bg-2);border:1px solid var(--line);border-radius:16px;
+    padding:24px;margin-bottom:40px;transition:border-color .4s var(--ease);                                                                                                      
+  }                                                                                                                                                                               
+  .signal-input:focus-within{border-color:var(--line-2)}                                                                                                                          
+  .signal-input textarea{                                                                                                                                                         
+    width:100%;background:none;border:none;outline:none;resize:none;
+    color:var(--ink);font-family:var(--sans);font-size:15px;font-weight:300;                                                                                                      
+    line-height:1.8;letter-spacing:0.03em;height:72px;
+  }                                                                                                                                                                               
+  .signal-input textarea::placeholder{color:var(--ink-4)}
+  .signal-input .bar{                                                                                                                                                             
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:16px;padding-top:16px;border-top:1px solid var(--line);                                                                                                            
+  }                                                                                                                                                                               
+  .signal-input .note{font-size:11px;color:var(--ink-4);font-family:var(--mono);letter-spacing:.14em}
+  .signal-input .char-count{font-size:11px;color:var(--ink-4);font-family:var(--mono);letter-spacing:.1em}                                                                        
+  .signal-input .send{                                                                                                                                                            
+    display:inline-flex;align-items:center;gap:8px;                                                                                                                               
+    padding:10px 20px;border-radius:999px;border:none;cursor:pointer;                                                                                                             
+    background:var(--signal);color:var(--bg);                                                                                                                                     
+    font-family:var(--sans);font-size:13px;font-weight:400;letter-spacing:.06em;                                                                                                  
+    box-shadow:0 0 0 0 var(--signal-glow);transition:all .4s var(--ease);                                                                                                         
+  }               
+  .signal-input .send:hover{box-shadow:0 0 30px -4px var(--signal-glow)}                                                                                                          
+  .signal-input .send:disabled{opacity:.25;cursor:default;box-shadow:none}                                                                                                        
+  .signal-input .bottom-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}                                                                        
+                                                                                                                                                                                  
+  /* feed */                                                                                                                                                                      
+  .feed{display:flex;flex-direction:column;gap:2px}                                                                                                                               
+                                                                                                                                                                                  
+  .signal-card{
+    padding:28px 24px;border-radius:14px;                                                                                                                                         
+    background:var(--bg-2);border:1px solid var(--line);                                                                                                                          
+    transition:border-color .3s var(--ease);
+    animation:fadeIn .5s var(--ease) both;                                                                                                                                        
+  }               
+  .signal-card:hover{border-color:var(--line-2)}                                                                                                                                  
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}                                                                                       
+  
+  .signal-card .meta{display:flex;align-items:center;gap:10px;margin-bottom:14px}                                                                                                 
+  .signal-card .meta .orb{width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.5}
+  .signal-card .meta .time{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--ink-4);text-transform:uppercase}                                               
+  .signal-card .body{font-size:15px;color:var(--ink-2);line-height:1.85;font-weight:300;margin-bottom:18px}                                                                       
+  .signal-card .reactions{display:flex;gap:8px;flex-wrap:wrap}                                                                                                                    
+  .signal-card .reactions button{                                                                                                                                                 
+    display:inline-flex;align-items:center;gap:6px;                                                                                                                               
+    padding:5px 13px;border-radius:999px;                                                                                                                                         
+    border:1px solid var(--line);background:none;                                                                                                                                 
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;
+    color:var(--ink-3);cursor:pointer;transition:all .3s var(--ease);                                                                                                             
+  }               
+  .signal-card .reactions button:hover{border-color:var(--accent);color:var(--accent)}                                                                                            
+  .signal-card .reactions button.active{
+    border-color:var(--accent);color:var(--accent);                                                                                                                               
+    background:rgba(200,165,107,0.08);                                                                                                                                            
+  }
+  .signal-card .reactions button .label{font-size:11px}                                                                                                                           
+  .signal-card .reactions button .cnt{min-width:8px;text-align:center}                                                                                                            
+                                                                                                                                                                                  
+  /* loading / empty */                                                                                                                                                           
+  .status{                                                                                                                                                                        
+    text-align:center;padding:60px 24px;                                                                                                                                          
+    color:var(--ink-4);font-size:13px;font-family:var(--mono);letter-spacing:.14em;
+  }                                                                                                                                                                               
+  .status .spinner{
+    width:20px;height:20px;border:1.5px solid var(--line-2);border-top-color:var(--accent);                                                                                       
+    border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite;                                                                                                      
+  }                                                                                                                                                                               
+  @keyframes spin{to{transform:rotate(360deg)}}                                                                                                                                   
+                                                                                                                                                                                  
+  /* load more */ 
+  .load-more{
+    display:block;width:100%;margin:16px 0;padding:14px;                                                                                                                          
+    border:1px solid var(--line);border-radius:12px;                                                                                                                              
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;                                                                                                                
+    color:var(--ink-3);text-align:center;transition:all .3s var(--ease);                                                                                                          
+  }               
+  .load-more:hover{border-color:var(--line-2);color:var(--ink-2)}                                                                                                                 
+                                                                                                                                                                                  
+  /* footer */
+  .board-footer{                                                                                                                                                                  
+    margin-top:60px;padding:32px 0 48px;
+    border-top:1px solid var(--line);text-align:center;                                                                                                                           
+  }
+  .board-footer p{font-size:11px;color:var(--ink-4);font-family:var(--mono);letter-spacing:.16em}                                                                                 
+  .board-footer a{color:var(--accent);transition:color .3s var(--ease)}                                                                                                           
+  .board-footer a:hover{color:var(--ink)}                                                                                                                                         
+                                                                                                                                                                                  
+  /* toast */                                                                                                                                                                     
+  .toast{         
+    position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
+    z-index:30;padding:12px 24px;border-radius:999px;                                                                                                                             
+    background:var(--bg-2);border:1px solid var(--line-2);                                                                                                                        
+    font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--accent);                                                                                               
+    opacity:0;transition:all .4s var(--ease);pointer-events:none;                                                                                                                 
+  }               
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}                                                                                                                 
+  </style>                                                                                                                                                                        
+  </head>
+  <body>                                                                                                                                                                          
+  <div class="page">
+
+  <nav class="nav">
+    <a href="/en/" class="mark"><span class="dot"></span>Noticed</a>
+    <a href="/en/" class="back">← back</a>                                                                                                                                        
+  </nav>
+                                                                                                                                                                                  
+  <div class="wrap">
+                                                                                                                                                                                  
+    <div class="header">
+      <div class="orb"></div>
+      <h1>TAKIBI Board</h1>
+      <p class="sub">Leave what you're feeling here, anonymously.<br>No words needed — a reaction is enough.</p>
+      <div class="count" id="totalCount"></div>                                                                                                                                   
+    </div>                                                                                                                                                                        
+                                                                                                                                                                                  
+    <div class="signal-input">                                                                                                                                                    
+      <textarea id="input" placeholder="Put what you're feeling into the fire. Anonymous." maxlength="280"></textarea>
+      <div class="bar">                                                                                                                                                           
+        <span class="note">Anonymous</span>
+        <span class="char-count" id="charCount">0 / 280</span>                                                                                                                    
+      </div>      
+      <div class="bottom-row">
+        <span></span>                                                                                                                                                             
+        <button class="send" id="sendBtn" disabled>add to fire</button>
+      </div>                                                                                                                                                                      
+    </div>        
+                                                                                                                                                                                  
+    <div id="feed" class="feed"></div>
+    <div id="status" class="status" style="display:none"></div>                                                                                                                   
+    <button id="loadMore" class="load-more" style="display:none">load more</button>                                                                                               
+  
+    <div class="board-footer">                                                                                                                                                    
+      <p><a href="/en/">Noticed</a> — TAKIBI Board</p>
+    </div>                                                                                                                                                                        
+  
+  </div>                                                                                                                                                                          
+  </div>          
+
+  <div class="toast" id="toast"></div>                                                                                                                                            
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>                                                                                       
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+                                                                                                                                                                                  
+  <script>        
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyBo92ZCDMZHadbYYUrTVdiorLfYmXKCobk",
+    authDomain: "noticed-dcc99.firebaseapp.com",                                                                                                                                  
+    projectId: "noticed-dcc99",                                                                                                                                                   
+    storageBucket: "noticed-dcc99.firebasestorage.app",                                                                                                                           
+    messagingSenderId: "606314638884",                                                                                                                                            
+    appId: "1:606314638884:web:5b23022d0fe68df23ab2b1"                                                                                                                            
+  };                                                                                                                                                                              
+                                                                                                                                                                                  
+  firebase.initializeApp(FIREBASE_CONFIG);                                                                                                                                        
+  const db = firebase.firestore();
+  const COLLECTION = 'signals_en';
+  const PAGE_SIZE = 20;                                                                                                                                                           
+  
+  const REACTIONS = [                                                                                                                                                             
+    { key: 'here',    label: "I'm here", icon: '○' },
+    { key: 'noticed', label: 'I noticed', icon: '◎' },                                                                                                                            
+    { key: 'feel',    label: 'same',      icon: '△' },                                                                                                                            
+  ];                                                                                                                                                                              
+                                                                                                                                                                                  
+  function getAnonId() {                                                                                                                                                          
+    let id = null;
+    try { id = localStorage.getItem('noticed_anon_id'); } catch(e) {}                                                                                                             
+    if (!id) {    
+      id = 'anon_' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36);                                                                                           
+      try { localStorage.setItem('noticed_anon_id', id); } catch(e) {}
+    }                                                                                                                                                                             
+    return id;    
+  }                                                                                                                                                                               
+  const ANON_ID = getAnonId();
+
+  function getMyReactions() {                                                                                                                                                     
+    try { return JSON.parse(localStorage.getItem('noticed_reactions') || '{}'); } catch(e) { return {}; }
+  }                                                                                                                                                                               
+  function saveMyReactions(obj) {
+    try { localStorage.setItem('noticed_reactions', JSON.stringify(obj)); } catch(e) {}                                                                                           
+  }
+                                                                                                                                                                                  
+  let signals = [];                                                                                                                                                               
+  let lastDoc = null;
+  let loading = false;                                                                                                                                                            
+  let hasMore = true;
+
+  const feedEl = document.getElementById('feed');                                                                                                                                 
+  const statusEl = document.getElementById('status');
+  const loadMoreEl = document.getElementById('loadMore');                                                                                                                         
+  const inputEl = document.getElementById('input');
+  const sendBtn = document.getElementById('sendBtn');
+  const charCount = document.getElementById('charCount');
+  const totalCountEl = document.getElementById('totalCount');                                                                                                                     
+  const toastEl = document.getElementById('toast');
+                                                                                                                                                                                  
+  inputEl.addEventListener('input', () => {                                                                                                                                       
+    const len = inputEl.value.length;
+    charCount.textContent = `${len} / 280`;                                                                                                                                       
+    sendBtn.disabled = inputEl.value.trim().length === 0;
+  });                                                                                                                                                                             
+  
+  async function postSignal() {                                                                                                                                                   
+    const text = inputEl.value.trim();
+    if (!text || loading) return;
+                                                                                                                                                                                  
+    sendBtn.disabled = true;
+    inputEl.disabled = true;                                                                                                                                                      
+                  
+    try {
+      await db.collection(COLLECTION).add({
+        text: text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),                                                                                                               
+        reactions: { here: 0, noticed: 0, feel: 0 },
+      });                                                                                                                                                                         
+      inputEl.value = '';
+      charCount.textContent = '0 / 280';                                                                                                                                          
+      showToast('added to the fire');
+      signals = [];
+      lastDoc = null;                                                                                                                                                             
+      hasMore = true;
+      await loadSignals();                                                                                                                                                        
+    } catch (err) {
+      console.error('Post error:', err);
+      showToast('something went wrong');                                                                                                                                          
+      sendBtn.disabled = false;
+    }                                                                                                                                                                             
+    inputEl.disabled = false;
+  }                                                                                                                                                                               
+  
+  sendBtn.addEventListener('click', postSignal);                                                                                                                                  
+                  
+  async function loadSignals() {
+    if (loading || !hasMore) return;
+    loading = true;
+    showStatus('loading');                                                                                                                                                        
+  
+    try {                                                                                                                                                                         
+      let query = db.collection(COLLECTION)
+        .orderBy('createdAt', 'desc')
+        .limit(PAGE_SIZE);
+                                                                                                                                                                                  
+      if (lastDoc) query = query.startAfter(lastDoc);
+                                                                                                                                                                                  
+      const snapshot = await query.get();
+
+      if (snapshot.empty) {
+        hasMore = false;
+        if (signals.length === 0) showStatus('empty');
+        else hideStatus();                                                                                                                                                        
+        loadMoreEl.style.display = 'none';
+        loading = false;                                                                                                                                                          
+        return;                                                                                                                                                                   
+      }
+                                                                                                                                                                                  
+      snapshot.forEach(doc => {
+        signals.push({ id: doc.id, ...doc.data() });
+      });
+
+      lastDoc = snapshot.docs[snapshot.docs.length - 1];                                                                                                                          
+      hasMore = snapshot.docs.length === PAGE_SIZE;
+                                                                                                                                                                                  
+      hideStatus();
+      render();
+      loadMoreEl.style.display = hasMore ? 'block' : 'none';
+    } catch (err) {
+      console.error('Load error:', err);                                                                                                                                          
+      showStatus('error');
+    }                                                                                                                                                                             
+    loading = false;
+  }
+
+  loadMoreEl.addEventListener('click', loadSignals);
+
+  async function toggleReaction(signalId, reactionKey) {                                                                                                                          
+    const myReactions = getMyReactions();
+    const rKey = `${signalId}_${reactionKey}`;                                                                                                                                    
+    const isActive = !!myReactions[rKey];                                                                                                                                         
+    const delta = isActive ? -1 : 1;
+                                                                                                                                                                                  
+    if (isActive) delete myReactions[rKey];
+    else myReactions[rKey] = true;                                                                                                                                                
+    saveMyReactions(myReactions);
+
+    const sig = signals.find(s => s.id === signalId);                                                                                                                             
+    if (sig) {
+      sig.reactions[reactionKey] = Math.max(0, (sig.reactions[reactionKey] || 0) + delta);                                                                                        
+      render();                                                                                                                                                                   
+    }
+                                                                                                                                                                                  
+    try {         
+      await db.collection(COLLECTION).doc(signalId).update({
+        [`reactions.${reactionKey}`]: firebase.firestore.FieldValue.increment(delta)
+      });                                                                                                                                                                         
+    } catch (err) {
+      console.error('Reaction error:', err);                                                                                                                                      
+      if (isActive) myReactions[rKey] = true;
+      else delete myReactions[rKey];                                                                                                                                              
+      saveMyReactions(myReactions);
+      if (sig) {                                                                                                                                                                  
+        sig.reactions[reactionKey] = Math.max(0, (sig.reactions[reactionKey] || 0) - delta);                                                                                      
+        render();
+      }                                                                                                                                                                           
+    }             
+  }
+
+  function render() {
+    const myReactions = getMyReactions();
+                                                                                                                                                                                  
+    feedEl.innerHTML = signals.map((s, i) => {
+      const timeStr = formatTime(s.createdAt);                                                                                                                                    
+      const reactionsHtml = REACTIONS.map(r => {                                                                                                                                  
+        const rKey = `${s.id}_${r.key}`;
+        const active = myReactions[rKey] ? 'active' : '';                                                                                                                         
+        const count = s.reactions?.[r.key] || 0;                                                                                                                                  
+        return `<button class="${active}" onclick="toggleReaction('${s.id}','${r.key}')">
+          <span class="label">${r.icon} ${r.label}</span>                                                                                                                         
+          <span class="cnt">${count}</span>
+        </button>`;                                                                                                                                                               
+      }).join('');
+                                                                                                                                                                                  
+      return `<div class="signal-card" style="animation-delay:${Math.min(i * 0.04, 0.2)}s">                                                                                       
+        <div class="meta">
+          <span class="orb"></span>                                                                                                                                               
+          <span class="time">${timeStr}</span>
+        </div>
+        <div class="body">${escHtml(s.text)}</div>
+        <div class="reactions">${reactionsHtml}</div>                                                                                                                             
+      </div>`;
+    }).join('');                                                                                                                                                                  
+                  
+    totalCountEl.textContent = `${signals.length} post${signals.length !== 1 ? 's' : ''}`;                                                                                        
+  }
+                                                                                                                                                                                  
+  function formatTime(timestamp) {
+    if (!timestamp) return 'just now';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const now = new Date();                                                                                                                                                       
+    const diff = Math.floor((now - date) / 1000);
+                                                                                                                                                                                  
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;                                                                                                                   
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });                                                                                                  
+  }               
+                                                                                                                                                                                  
+  function escHtml(t) {
+    const d = document.createElement('div');
+    d.textContent = t;                                                                                                                                                            
+    return d.innerHTML;
+  }                                                                                                                                                                               
+                  
+  function showStatus(type) {
+    statusEl.style.display = 'block';
+    if (type === 'loading') {
+      statusEl.innerHTML = '<div class="spinner"></div>Loading...';                                                                                                               
+    } else if (type === 'empty') {
+      statusEl.innerHTML = 'No posts yet.<br>Be the first to add something.';                                                                                                     
+    } else if (type === 'error') {                                                                                                                                                
+      statusEl.innerHTML = 'Failed to load.<br>Please refresh the page.';
+    }                                                                                                                                                                             
+  }               
+                                                                                                                                                                                  
+  function hideStatus() {
+    statusEl.style.display = 'none';
+  }
+                                                                                                                                                                                  
+  function showToast(msg) {
+    toastEl.textContent = msg;                                                                                                                                                    
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 2400);
+  }
+
+  loadSignals();                                                                                                                                                                  
+  </script>
+  </body>                                                                                                                                                                         
+  </html>    
